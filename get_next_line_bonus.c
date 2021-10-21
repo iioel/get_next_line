@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 16:08:45 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/10/22 00:48:01 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/10/22 01:01:22 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,18 @@
 
 char	*get_next_line(int fd)
 {
-	static char	*readed;
-	static int	eof;
-	size_t		nb_readed;
+	static t_fd_list	(*list)[2];
 
 	if (read(fd, 0, 0))
 		return (clean(&readed));
-	if (readed == NULL)
+	list[1] = find_fd(list[1], fd);
+	if (list[1] == NULL)
 	{
-		readed = ft_calloc(1, sizeof(char));
-		eof = 0;
+		list[1] = ft_calloc(1, sizeof(t_fd_list));
+		list[1]->readed = ft_calloc(1, sizeof(char));
+		list[1]->eof = 0;
 	}
-	if (ft_strchr(readed, '\n'))
+	if (ft_strchr(list[1]->readed, '\n'))
 		return (return_line(&readed));
 	else if (! eof)
 	{
@@ -90,4 +90,15 @@ char	*clean(char **s)
 		free(*s);
 	*s = NULL;
 	return (NULL);
+}
+
+t_fd_list	*find_fd(t_fd_list *list, int fd)
+{
+	while (list)
+	{
+		if (list->fd == fd)
+			return (list);
+		list = list->next;
+	}
+	return (NULL)
 }
