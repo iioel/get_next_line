@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 16:08:45 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/10/21 22:05:40 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/10/22 01:02:59 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,9 @@ char	*get_next_line(int fd)
 int	read_line(int fd, char **readed)
 {
 	char	buf[BUFFER_SIZE];
-	int		total_chars;
 	int		total_buf;
 	int		eof;
 
-	total_chars = 0;
 	total_buf = 0;
 	eof = 0;
 	while (! eof && ! ft_strchr(*readed, '\n'))
@@ -60,12 +58,9 @@ int	read_line(int fd, char **readed)
 		else if (total_buf == 0)
 			eof = 1;
 		else
-		{
 			*readed = ft_strjoinbuf(*readed, buf, total_buf);
-			total_chars += total_buf;
-		}
 	}
-	return (total_chars);
+	return (1);
 }
 
 char	*return_line(char **readed)
