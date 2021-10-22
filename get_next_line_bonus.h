@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 16:09:27 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/10/22 00:48:23 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/10/22 04:29:33 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,10 @@
 
 typedef struct s_fd_list
 {
-	int			fd;
-	int			nb_readed;
-	char		*readed;
-	char		eof;
-	s_fd_list	*next;
+	int					fd;
+	int					nb_readed;
+	char				*readed;
+	struct s_fd_list	*next;
 }			t_fd_list;
 
 size_t	ft_strlen(const char *s);
@@ -36,7 +35,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 
 int		read_line(int fd, char **readed);
 char	*return_line(char **readed);
-char	*clean(char **s);
+char	*clean(t_fd_list **s, char full);
 char	*get_next_line(int fd);
 
 #endif

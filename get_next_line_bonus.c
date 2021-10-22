@@ -1,45 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 16:08:45 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/10/22 01:01:22 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/10/22 04:30:11 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 #include <unistd.h>
 #include <stdlib.h>
 
+t_fd_list	*find_fd(t_fd_list **list, int fd);
+
 char	*get_next_line(int fd)
 {
-	static t_fd_list	(*list)[2];
+	static t_fd_list	*list[2];
 
+	if (list[0])
+		list[0] = NULL;
+	if (list[1])
+		list[1] = NULL;
 	if (read(fd, 0, 0))
-		return (clean(&readed));
-	list[1] = find_fd(list[1], fd);
-	if (list[1] == NULL)
-	{
-		list[1] = ft_calloc(1, sizeof(t_fd_list));
-		list[1]->readed = ft_calloc(1, sizeof(char));
-		list[1]->eof = 0;
-	}
+		return (clean(&(list[0]), 1));
+	list[1] = find_fd(&(list[0]), fd);
 	if (ft_strchr(list[1]->readed, '\n'))
-		return (return_line(&readed));
-	else if (! eof)
-	{
-		nb_readed = read_line(fd, &readed);
-		if (nb_readed > 0 && *readed)
-			return (return_line(&readed));
-		else if (! nb_readed)
-			eof = 1;
-	}
-	if (eof && *readed)
-		return (return_line(&readed));
-	return (clean(&readed));
+		return (return_line(&(list[1]->readed)));
+	list[1]->nb_readed = read_line(fd, &(list[1]->readed));
+	if (list[1]->nb_readed > 0 && *(list[1]->readed))
+		return (return_line(&(list[1]->readed)));
+	if (*(list[1]->readed))
+		return (return_line(&(list[1]->readed)));
+	return (clean(&(list[1]), 0));
 }
 
 int	read_line(int fd, char **readed)
@@ -75,30 +70,66 @@ char	*return_line(char **readed)
 		line_size = ft_strlen(*readed);
 	out = ft_substr(*readed, 0, line_size);
 	if (! out)
-		return (clean(readed));
+		free(*readed);
+	if (! out)
+		return (NULL);
 	tmp = ft_substr(*readed, line_size, ft_strlen(*readed) - line_size);
 	free(*readed);
 	if (! tmp)
-		return (clean(&out));
+	{
+		free(out);
+		return (NULL);
+	}
 	*readed = tmp;
 	return (out);
 }
 
-char	*clean(char **s)
+char	*clean(t_fd_list **s, char full)
 {
+	t_fd_list	*actual;
+	t_fd_list	*next;
+
 	if (*s)
-		free(*s);
-	*s = NULL;
+	{
+		actual = *s;
+		*s = NULL;
+		if (! full)
+			actual->next = NULL;
+		while (actual)
+		{
+			free(actual->readed);
+			next = actual->next;
+			free(actual);
+			actual = next;
+		}
+	}	
 	return (NULL);
 }
 
-t_fd_list	*find_fd(t_fd_list *list, int fd)
+t_fd_list	*find_fd(t_fd_list **list, int fd)
 {
-	while (list)
-	{
-		if (list->fd == fd)
-			return (list);
-		list = list->next;
-	}
-	return (NULL)
+	t_fd_list	*out;
+	t_fd_list	*prev;
+
+	if (*list)
+		while (*list)
+		{
+			prev = *list;
+			if ((*list)->fd == fd)
+				return (*list);
+			*list = (*list)->next;
+		}
+	out = ft_calloc(1, sizeof(t_fd_list));
+	if (! out)
+		return (NULL);
+	out->readed = ft_calloc(1, sizeof(char));
+	if (! out)
+		free(out);
+	if (! out)
+		return (NULL);
+	if (! *list)
+		*list = out;
+	else
+		prev->next = out;
+	return (out);
 }
