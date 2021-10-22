@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 16:08:45 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/10/22 00:48:01 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/10/22 03:15:51 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,18 @@
 char	*get_next_line(int fd)
 {
 	static char	*readed;
-	static int	eof;
 	size_t		nb_readed;
 
 	if (read(fd, 0, 0))
 		return (clean(&readed));
 	if (readed == NULL)
-	{
 		readed = ft_calloc(1, sizeof(char));
-		eof = 0;
-	}
 	if (ft_strchr(readed, '\n'))
 		return (return_line(&readed));
-	else if (! eof)
-	{
-		nb_readed = read_line(fd, &readed);
-		if (nb_readed > 0 && *readed)
-			return (return_line(&readed));
-		else if (! nb_readed)
-			eof = 1;
-	}
-	if (eof && *readed)
+	nb_readed = read_line(fd, &readed);
+	if (nb_readed > 0 && *readed)
+		return (return_line(&readed));
+	if (*readed)
 		return (return_line(&readed));
 	return (clean(&readed));
 }
