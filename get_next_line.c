@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 16:08:45 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/10/22 18:02:25 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/10/22 18:04:34 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int	read_line(int fd, char **readed)
 		else if (total_buf == 0)
 			eof = 1;
 		else
+		{
 			*readed = ft_strjoinbuf(*readed, buf, total_buf);
 			if (! *readed)
 				return (-1);
