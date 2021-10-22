@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 16:08:45 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/10/22 04:30:11 by yoel             ###   ########.fr       */
+/*   Updated: 2021/10/22 14:58:10 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@ char	*get_next_line(int fd)
 {
 	static t_fd_list	*list[2];
 
-	if (list[0])
+	if (! list[0])
 		list[0] = NULL;
-	if (list[1])
+	if (! list[1])
 		list[1] = NULL;
 	if (read(fd, 0, 0))
-		return (clean(&(list[0]), 1));
+		return (clean(list, 1));
 	list[1] = find_fd(&(list[0]), fd);
 	if (ft_strchr(list[1]->readed, '\n'))
 		return (return_line(&(list[1]->readed)));
@@ -34,7 +34,7 @@ char	*get_next_line(int fd)
 		return (return_line(&(list[1]->readed)));
 	if (*(list[1]->readed))
 		return (return_line(&(list[1]->readed)));
-	return (clean(&(list[1]), 0));
+	return (clean(list, 0));
 }
 
 int	read_line(int fd, char **readed)
@@ -86,21 +86,30 @@ char	*return_line(char **readed)
 
 char	*clean(t_fd_list **s, char full)
 {
-	t_fd_list	*actual;
+	t_fd_list	**actual;
 	t_fd_list	*next;
+	t_fd_list	*prev;
 
-	if (*s)
+	actual = &s[0];
+	if (actual && *actual)
 	{
-		actual = *s;
-		*s = NULL;
-		if (! full)
-			actual->next = NULL;
-		while (actual)
+		while (! full && *actual)
 		{
-			free(actual->readed);
-			next = actual->next;
-			free(actual);
-			actual = next;
+			prev = *actual;
+			if (*actual == s[1])
+				break ;
+			*actual = (*actual)->next;
+		}
+		while (*actual)
+		{
+			free((*actual)->readed);
+			if (!full)
+				prev->next = (*actual)->next;
+			if (!full)
+				(*actual)->next = NULL;
+			next = (*actual)->next;
+			free(*actual);
+			actual = (t_fd_list **)next;
 		}
 	}	
 	return (NULL);
@@ -123,6 +132,8 @@ t_fd_list	*find_fd(t_fd_list **list, int fd)
 	if (! out)
 		return (NULL);
 	out->readed = ft_calloc(1, sizeof(char));
+	out->fd = fd;
+	out->next = NULL;
 	if (! out)
 		free(out);
 	if (! out)
