@@ -6,13 +6,25 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 16:08:45 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/10/22 03:15:51 by yoel             ###   ########.fr       */
+/*   Updated: 2021/10/22 17:55:51 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <unistd.h>
 #include <stdlib.h>
+
+// In file get_next_line_utils.c
+size_t	ft_strlen(const char *s);
+void	*ft_calloc(size_t count, size_t size);
+char	*ft_strjoinbuf(char *s1, char s2[BUFFER_SIZE], const size_t s2_size);
+char	*ft_strchr(const char *s, int c);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+
+// In this file
+int		read_line(int fd, char **readed);
+char	*return_line(char **readed);
+char	*clean(char **s);
 
 char	*get_next_line(int fd)
 {
@@ -27,8 +39,6 @@ char	*get_next_line(int fd)
 		return (return_line(&readed));
 	nb_readed = read_line(fd, &readed);
 	if (nb_readed > 0 && *readed)
-		return (return_line(&readed));
-	if (*readed)
 		return (return_line(&readed));
 	return (clean(&readed));
 }
@@ -49,7 +59,11 @@ int	read_line(int fd, char **readed)
 		else if (total_buf == 0)
 			eof = 1;
 		else
+		{
 			*readed = ft_strjoinbuf(*readed, buf, total_buf);
+			if (! *readed)
+				return (-1);
+		}
 	}
 	return (1);
 }
@@ -67,6 +81,11 @@ char	*return_line(char **readed)
 	out = ft_substr(*readed, 0, line_size);
 	if (! out)
 		return (clean(readed));
+	if (! ft_strchr(*readed, '\n'))
+	{
+		clean(readed);
+		return (out);
+	}
 	tmp = ft_substr(*readed, line_size, ft_strlen(*readed) - line_size);
 	free(*readed);
 	if (! tmp)
