@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/20 17:58:41 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/10/22 17:41:35 by ycornamu         ###   ########.fr       */
+/*   Created: 2021/10/22 22:34:14 by ycornamu          #+#    #+#             */
+/*   Updated: 2021/10/22 22:34:21 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 #include <stdlib.h>
 
 char	*ft_strjoinbuf(char *s1, char s2[BUFFER_SIZE], const size_t s2_size);
